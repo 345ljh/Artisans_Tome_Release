@@ -1,0 +1,4 @@
+*.psd
+!/documentation/*.png
+*/__pycache__
+*.FCBak

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32配网</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        h1 { color: #2c3e50; }
+        form { background: #ecf0f1; padding: 20px; border-radius: 10px; }
+        input { padding: 10px; margin: 10px 0; width: 100%; box-sizing: border-box; }
+        button { background: #3498db; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        .saved-networks { margin-top: 30px; }
+        .network-item { background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>ESP32 WiFi配置</h1>
+    <form action="/connect" method="POST">
+        <h2>添加新网络</h2>
+        <input type="text" name="ssid" placeholder="WiFi名称" required>
+        <input type="password" name="password" placeholder="WiFi密码" required>
+        <button type="submit">连接并保存</button>
+    </form>
+
+    <h1>AI配置</h1>
+    <form action="/aiconfig" method="POST">
+        <h2>语言模型</h2>
+        <input type="text" name="llm_model" placeholder="模型名称" required>
+        <input type="text" name="llm_url" placeholder="API URL" required>
+        <input type="text" name="llm_key" placeholder="API Key" required>
+        <h2>图像生成模型</h2>
+        <input type="text" name="img_key" placeholder="API Key" required>
+        <button type="submit">设置并保存</button>
+    </form>
+
+    <div class="saved-networks">
+        <h2>已保存的网络</h2>
+        <div id="savedList">
+            <!-- 已保存的网络将在这里显示 -->
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载时获取已保存的网络
+        window.onload = function() {
+            fetch('/networks')
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById('savedList');
+                    list.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        list.innerHTML = '<p>暂无保存的网络</p>';
+                        return;
+                    }
+                    
+                    data.forEach((network, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'network-item';
+                        div.innerHTML = `
+                            <strong>${network.ssid}</strong>
+                            <button onclick="deleteNetwork(${index})">删除</button>
+                            <button onclick="connectTo(${index})">连接</button>
+                        `;
+                        list.appendChild(div);
+                    });
+                });
+        };
+        
+        function deleteNetwork(index) {
+            fetch('/delete?index=' + index, { method: 'POST' })
+                .then(() => location.reload());
+        }
+        
+        function connectTo(index) {
+            fetch('/connect?saved=' + index, { method: 'POST' })
+                .then(() => {
+                    alert('正在尝试连接...');
+                });
+        }
+    </script>
+
+</body>
+</html>
