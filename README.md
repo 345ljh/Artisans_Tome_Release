@@ -7,6 +7,8 @@
 
 /3d：3D模型，包括FreeCAD工程文件与stl模型。
 /documentation：项目详细文档。
+/pcb：立创EDA工程文件、BOM表、Gerber文件。
+/screen：ESP32软件。
 /handbook：使用手册。
 /image_generation：
  - bootstrap：FunctionGraph项目启动文件。
@@ -15,5 +17,3 @@
  - ref.py：base64格式的参考图像。
  - test_client.py：FunctionGraph测试客户端。
  - zpix.ttf：像素字体文件。
-/pcb：立创EDA工程文件、BOM表、Gerber文件。
-/screen：ESP32软件。
